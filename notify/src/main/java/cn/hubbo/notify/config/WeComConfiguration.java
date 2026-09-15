@@ -1,6 +1,7 @@
 package cn.hubbo.notify.config;
 
 import lombok.RequiredArgsConstructor;
+import me.chanjar.weixin.common.util.http.apache.DefaultApacheHttpClientBuilder;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.api.impl.WxCpServiceImpl;
 import me.chanjar.weixin.cp.config.WxCpConfigStorage;
@@ -31,6 +32,7 @@ public class WeComConfiguration {
         config.setCorpId(properties.getCorpId());
         config.setCorpSecret(properties.getCorpSecret());
         config.setAgentId(properties.getAgentId());
+        config.setApacheHttpClientBuilder(DefaultApacheHttpClientBuilder.get());
         return config;
     }
 

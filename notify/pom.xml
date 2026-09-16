@@ -95,6 +95,7 @@
 
 
     <build>
+        <finalName>hubbo-message</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

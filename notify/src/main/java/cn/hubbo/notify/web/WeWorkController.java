@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.Map;
 
 @Tag(name = "企微API")
 @Slf4j
@@ -64,6 +65,12 @@ public class WeWorkController {
         // 3QFip3x-MSg8mSVG6eTLmRiozi7dqsxFv9sZ3kFlIfjAmZLxwPE77ZcIU07CmtC-_XjAFGpXX0N02XSziU7NPMw
         String mediaId = weWorkService.uploadMedia(FileUtils.mapMimeTypeToMediaType(FileUtils.mimeType(file.getInputStream()), filename), file.getInputStream(), file.getOriginalFilename());
         return Result.success(mediaId);
+    }
+
+    @PostMapping("/webhook")
+    public Result<?> webhook(@RequestBody Map<String, Object> body) {
+        log.info("webhook data {}", body);
+        return Result.success();
     }
 
 

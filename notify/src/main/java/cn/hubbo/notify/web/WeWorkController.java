@@ -1,10 +1,14 @@
 package cn.hubbo.notify.web;
 
 import cn.hubbo.notify.entity.Result;
+import cn.hubbo.notify.enums.WeComMsgType;
 import cn.hubbo.notify.service.WeWorkService;
 import cn.hubbo.notify.utils.FileUtils;
 import cn.hubbo.notify.vo.WeComNotifyMessage;
+import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSONPath;
 import com.alipay.sofa.runtime.api.annotation.SofaReference;
+import com.google.gson.JsonObject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -56,9 +60,7 @@ public class WeWorkController {
     }
 
     @Operation(summary = "消息素材上传")
-    @Parameters({
-            @Parameter(name = "file", description = "上传的文件")
-    })
+    @Parameters({@Parameter(name = "file", description = "上传的文件")})
     @PostMapping("/media/upload")
     public Result<?> uploadFile(MultipartFile file) throws Exception {
         String filename = file.getOriginalFilename();
@@ -68,9 +70,19 @@ public class WeWorkController {
     }
 
     @PostMapping("/webhook")
-    public Result<?> webhook(@RequestBody Map<String, Object> body) {
-        log.info("webhook data {}", body);
+    public Result<?> webhook(@RequestBody JSONObject jsonObject) throws WxErrorException {
+        // webhook data {text={content=当前为企业微信测试消息  }, msgtype=text}
+        log.info("webhook data {}", jsonObject);
+        if (jsonObject.containsKey("text")) {
+            WeComNotifyMessage message = new WeComNotifyMessage();
+            message.setMsgType(WeComMsgType.TEXT);
+            message.setContent(jsonObject.eval(JSONPath.of("$.text.content")).toString());
+            message.setToUser("@all");
+            weWorkService.send(message);
+            return Result.success();
+        }
         return Result.success();
+
     }
 
 
